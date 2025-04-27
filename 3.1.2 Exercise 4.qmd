@@ -1,0 +1,130 @@
+---
+title: "Statistics 3.1.2 Exercise 4"
+subtitle: "Literary Style of Different Authors"
+author: "Lucas Liona"
+format:
+  pdf:
+    toc: true
+    fig-width: 8
+    fig-height: 6
+  html:
+    toc: true
+    code-fold: show
+    fig-width: 8
+    fig-height: 6
+execute:
+  echo: true
+---
+
+## Problem Description
+
+The literary style of different authors differs widely from one to another, and it is possible to measure these differences statistically. By style we mean those aspects of writing that might be independent of the subject matter; for example, the lengths of words and sentences or the frequencies of different words. This exercise analyzes word frequencies in two books: *Pride and Prejudice* by Jane Austen and *Spy Hook* by Len Deighton.
+
+### Data Loading and Preparation
+
+```{r}
+# Load required libraries
+library(ggplot2)
+library(dplyr)
+
+# Read the data
+book_data <- read.table("book.txt", header = TRUE)
+
+# Check the structure of our data
+str(book_data)
+
+# View summary statistics
+summary(book_data)
+```
+
+```{r}
+# Create a nicer looking table of the data
+knitr::kable(book_data, caption = "Percentage of 'to' and 'the' in Each Book")
+```
+
+### (a) Scatter Plots
+
+Let's create scatter plots of percentage of "to" versus percentage of "the" for each book separately:
+
+```{r}
+# Separate the data by book
+pride_data <- book_data[book_data$book == "pride", ]
+spyhook_data <- book_data[book_data$book == "spyhook", ]
+
+# Create individual plots
+par(mfrow = c(1, 2))
+
+# Plot for Pride and Prejudice
+plot(pride_data$pcthe, pride_data$pcto, 
+     main = "Pride and Prejudice",
+     xlab = "% of 'the'",
+     ylab = "% of 'to'",
+     pch = 17,
+     xlim = c(2, 8),
+     ylim = c(1.5, 4.0))
+
+# Plot for Spy Hook
+plot(spyhook_data$pcthe, spyhook_data$pcto, 
+     main = "Spy Hook",
+     xlab = "% of 'the'",
+     ylab = "% of 'to'",
+     pch = 1,
+     xlim = c(2, 8),
+     ylim = c(1.5, 4.0))
+```
+
+### (b) Features of the Plots
+
+Looking at the individual plots, several interesting features emerge:
+
+1. **Pride and Prejudice**: The plot shows a strong positive relationship between the percentage of "to" and the percentage of "the". Most points cluster together, suggesting consistent word usage patterns, with two points appearing as outliers (visible in the upper-left portion of the plot).
+
+2. **Spy Hook**: The relationship appears weaker and possibly nonlinear, with an initial downward trend that curves upward. There's more scatter in the data points, suggesting greater variability in word usage patterns across different pages.
+
+The outliers in the Pride and Prejudice plot warrant further investigation as they may represent pages with unusual characteristics.
+
+### (c) Combined Plot
+
+Now let's create a combined scatter plot using different plotting symbols for each book:
+
+```{r}
+# Create a combined plot
+ggplot(book_data, aes(x = pcthe, y = pcto, shape = book, color = book)) +
+  geom_point(size = 3) +
+  scale_shape_manual(values = c("pride" = 17, "spyhook" = 1)) +
+  scale_color_manual(values = c("pride" = "black", "spyhook" = "red")) +
+  labs(title = "Combined Plot of Word Frequencies",
+       x = "% of 'the'",
+       y = "% of 'to'",
+       color = "Book",
+       shape = "Book") +
+  theme_minimal() +
+  theme(legend.position = "top")
+```
+
+The combined plot reveals a clear separation between the two books:
+
+- **Pride and Prejudice** points tend to cluster in the lower-left region (fewer "to"s and "the"s).
+- **Spy Hook** points generally appear in the upper-right region (more "to"s and "the"s).
+
+This pattern suggests that these word frequencies could effectively discriminate between the two books.
+
+### (d) Differentiation Between Books
+
+Yes, it is possible to differentiate between *Pride and Prejudice* and *Spy Hook* using these data. The combined plot shows that:
+
+1. The two books occupy largely separate regions of the plot
+2. Pride and Prejudice tends to use both "to" and "the" less frequently than Spy Hook
+3. With only a few exceptions, you could draw a diagonal line that would separate most points from each book
+
+This suggests that word frequency analysis can be an effective tool for authorship attribution. The differences likely reflect distinct writing styles - Jane Austen's more formal 19th-century prose versus Len Deighton's more contemporary thriller style.
+
+## Conclusions
+
+The analysis demonstrates that even simple word frequency measurements can reveal significant differences in literary style. The distinct clustering patterns between the two books suggest that:
+
+1. Authors have consistent word usage patterns within their works
+2. These patterns differ measurably between authors
+3. Such statistical approaches could be extended to broader authorship attribution problems
+
+These findings support the use of computational stylistics in literary analysis and forensic linguistics.

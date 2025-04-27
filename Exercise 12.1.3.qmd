@@ -1,0 +1,51 @@
+---
+title: "Statistics Exercise 12.1.3"
+subtitle: "Ohms Law"
+author: "Lucas Liona"
+format:
+  pdf:
+    toc: true
+    fig-width: 8
+    fig-height: 6
+  html:
+    toc: true
+    code-fold: show
+    fig-width: 8
+    fig-height: 6
+execute:
+  echo: true
+---
+
+
+## Problem
+
+According to Ohm's law, the voltage $V$ in volts measured across a resistance of $r = 4$ ohms
+when a current of $J$ amps is passed through is given by the formula $V = rI$ .
+
+- How would you set up an experiment to test Ohm's law using a scatter plot? What sort
+of trend line or curve should fit the plot? What point should the trend pass through?
+
+- Suppose that the resistance $r$ is unknown. Assuming Ohm's law to be true, how could
+you use your trend to estimate $r$ ?
+
+### Question 2
+
+- People fit theoretical models to data for three main purposes. What are they?
+
+## The Experiment 
+
+Because $r$, the resistance, is fixed we can change $J$, measure $V$ and thus we will have a graph where $J$ (the independent variable) is the x-axis and the voltage (which we measure (the dependent variable)) is the y-axis. Again, because $r$ is fixed we should obverse a positive, linear, relationship between the two, save for noise. 
+
+## Finding R
+
+This means that if $r$ is unknown, it should be the slope of the best-fit line. As we mentioned before, $J$ (current) is $x$ and $V$ (voltage) is $y$. This means $y = rx$, so once we get a linear representation/regression, the slope will be $r$. 
+
+## Models
+
+The reasons I would say are to:
+
+- Estimate/Predict the value of new pieces of data, according to the observed trend/pattern.
+
+- Use equation of the best-fine line or trend equation to find the value of certain variables/coefficients. Applies to linear, quadratic, logarithmic, and normal distribution, basically everything.
+
+- To interprate the model as a whole and make meaningful insights, i.e. the type of distribution, confidence intervals, highest value, the spread of the data, the trend of the data, the relationship between variables

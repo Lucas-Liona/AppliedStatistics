@@ -1,0 +1,122 @@
+---
+title: "Statistics 3.2.2 Exercise 2"
+subtitle: "Waist-to-Hip Ratios Men/Women"
+author: "Lucas Liona"
+format:
+  pdf:
+    toc: true
+    fig-width: 8
+    fig-height: 6
+  html:
+    toc: true
+    code-fold: show
+    fig-width: 8
+    fig-height: 6
+execute:
+  echo: true
+---
+
+## Problem Description
+
+Waist-to-hip ratios of men and women sampled from the workforce-study database are provided. The data includes different age groups (≤45 and >45) for both males and females.
+
+## Data Loading and Preparation
+
+```{r}
+# Load required libraries
+library(ggplot2)
+library(dplyr)
+
+# Read the data
+waist_data <- read.table("waists.txt", header = TRUE, sep = "\t")
+
+# Check the structure of our data
+str(waist_data)
+
+# View summary statistics
+summary(waist_data)
+```
+
+## (a) Box Plots
+
+Let's create box plots to compare the four groups by gender and age group:
+
+```{r}
+# Create box plots for each group
+ggplot(waist_data, aes(x = agegp, y = ratios, fill = sex)) +
+  geom_boxplot() +
+  facet_wrap(~ sex) +
+  labs(title = "Waist-to-Hip Ratios by Gender and Age Group",
+       x = "Age Group",
+       y = "Waist-to-Hip Ratio") +
+  theme_minimal() +
+  scale_fill_manual(values = c("male" = "lightblue", "feml" = "pink"))
+```
+
+```{r}
+# Alternative: Side-by-side box plots
+par(mfrow = c(1, 2))
+
+# Plot for males
+male_data <- waist_data[waist_data$sex == "male", ]
+boxplot(ratios ~ agegp, data = male_data, 
+        main = "Males", 
+        xlab = "Age Group", 
+        ylab = "Waist-to-Hip Ratio",
+        ylim = c(0.7, 1.1))
+
+# Plot for females
+female_data <- waist_data[waist_data$sex == "feml", ]
+boxplot(ratios ~ agegp, data = female_data, 
+        main = "Females", 
+        xlab = "Age Group", 
+        ylab = "Waist-to-Hip Ratio",
+        ylim = c(0.7, 1.1))
+```
+
+## (b) Analysis of Results
+
+Examining the box plots reveals several important patterns:
+
+### Gender Differences:
+- Women consistently have lower waist-to-hip ratios than men across both age groups.
+- Male ratios typically range from about 0.85 to 1.0, while female ratios range from about 0.7 to 0.9.
+
+### Age Effects:
+- For both genders, the older age group (>45) shows slightly higher waist-to-hip ratios on average.
+- The age effect appears more pronounced in women, with a clearer separation between the age groups.
+
+### Variability:
+- All groups show relatively similar spreads (interquartile ranges).
+- The data appears approximately symmetric for all groups with a few outliers in each.
+
+The clear separation between male and female distributions suggests that gender is a strong predictor of waist-to-hip ratio. Age also appears to be a factor, though less pronounced than gender.
+
+## Statistical Summary
+
+Let's calculate summary statistics for each group:
+
+```{r}
+# Group summary statistics
+waist_data %>%
+  group_by(sex, agegp) %>%
+  summarise(
+    n = n(),
+    mean = mean(ratios),
+    median = median(ratios),
+    sd = sd(ratios),
+    min = min(ratios),
+    max = max(ratios)
+  ) %>%
+  knitr::kable(digits = 3, caption = "Summary Statistics by Group")
+```
+
+## Conclusion
+
+The analysis confirms that both gender and age influence waist-to-hip ratios:
+
+1. **Gender is the primary factor**: Men consistently have higher ratios than women, likely reflecting biological differences in fat distribution patterns.
+
+2. **Age has a secondary effect**: Both genders show increased ratios with age, possibly due to changes in body composition over time.
+
+These differences are important for health assessments, as waist-to-hip ratio is often used as an indicator of health risks associated with body fat distribution.

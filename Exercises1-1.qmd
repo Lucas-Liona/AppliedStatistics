@@ -1,5 +1,6 @@
 ---
 title: "Probability with R - Exercise 1.1"
+subtitle: "Handling Data"
 author: "Lucas Liona"
 format:
   pdf:

@@ -1,0 +1,85 @@
+---
+title: "Statistics 9.2 Exercises 1, 3, and 7"
+subtitle: "Null and Alternative Hypotheses"
+author: "Lucas Liona"
+format:
+  pdf:
+    toc: true
+    fig-width: 8
+    fig-height: 6
+  html:
+    toc: true
+    code-fold: show
+    fig-width: 8
+    fig-height: 6
+execute:
+  echo: true
+---
+
+## Problems
+
+1. A consumer advocate suspects that a bottling plant is systematically underfilling its 750-mL wine bottles. A sample of 40 bottles is taken and the volume of wine in each bottle measured.
+
+3. A researcher thinks that learning a closely related foreign language should improve the comprehension of English. Sixty students were randomly split into two classes of 30 students. The educational program of both classes was the same except that one class studied French and the other took mathematics. At the end of the year all students took a reading comprehension test.
+
+7. Are bank customers attracted by a free-giveaway promotion less loyal than those who became customers without inducements? Samples of 1000 of each type of customer are taken and the proportion of each group who are still doing business with the bank five years later is obtained.
+
+## Solutions
+
+### Problem 1: Wine Bottle Filling
+
+**Parameter Definition**: Let $\mu$ represent the population mean volume of wine in a bottle (in mL).
+
+**(a) Null Hypothesis**:
+$$H_0: \mu = 750$$
+This states that the mean volume of wine in bottles is exactly 750 mL as claimed.
+
+**(b) Alternative Hypothesis**:
+$$H_1: \mu < 750$$
+This states that the mean volume of wine in bottles is less than 750 mL (underfilling).
+
+**(c) Expected Behavior in Data**:
+We would check whether the sample mean volume ($\bar{x}$) from the 40 bottles tested is sufficiently smaller than 750 mL that the difference cannot be explained simply by sampling variation. We would look for a sample mean that falls significantly below 750 mL, which would provide evidence against the null hypothesis and support the claim of systematic underfilling.
+
+### Problem 3: Language Learning and Reading Comprehension
+
+**Parameter Definition**: Let $\mu_{French}$ represent the population mean reading comprehension score for students who studied French, and $\mu_{math}$ represent the population mean reading comprehension score for students who took mathematics.
+
+**(a) Null Hypothesis**:
+$$H_0: \mu_{French} - \mu_{math} = 0$$
+This states that there is no difference in reading comprehension scores between students who studied French and those who took mathematics.
+
+**(b) Alternative Hypothesis**:
+$$H_1: \mu_{French} - \mu_{math} > 0$$
+This states that students who studied French have higher reading comprehension scores than those who took mathematics.
+
+**(c) Expected Behavior in Data**:
+We would check whether the sample mean comprehension score from the French class ($\bar{x}_{French}$) is sufficiently larger than the sample mean from the mathematics class ($\bar{x}_{math}$) that the difference cannot be explained simply by sampling variation. We would look for a statistically significant positive difference that would support the hypothesis that learning French improves English comprehension.
+
+### Problem 7: Bank Customer Loyalty
+
+**Parameter Definition**: Let $p_{giveaway}$ represent the population proportion of customers attracted by a free-giveaway promotion who are still doing business with the bank five years later, and $p_{none}$ represent the population proportion of customers who became customers without inducements who are still doing business with the bank five years later.
+
+**(a) Null Hypothesis**:
+$$H_0: p_{giveaway} - p_{none} = 0$$
+This states that there is no difference in loyalty between customers attracted by free giveaways and those who became customers without inducements.
+
+**(b) Alternative Hypothesis**:
+$$H_1: p_{giveaway} - p_{none} < 0$$
+This states that customers attracted by free giveaways are less loyal (have a lower proportion still doing business with the bank after five years) than those who became customers without inducements.
+
+Note: One could also argue for a two-sided alternative ($\neq$) if there's no clear expectation about direction.
+
+**(c) Expected Behavior in Data**:
+We would check whether the sample proportion of the giveaway sample who were still doing business with the bank 5 years later ($\hat{p}_{giveaway}$) is sufficiently smaller than the corresponding proportion for the no-giveaway sample ($\hat{p}_{none}$) that the difference cannot be explained simply by sampling variation. We would look for a statistically significant negative difference, which would provide evidence that giveaway-induced customers are less loyal.
+
+## Summary
+
+Each of these hypothesis tests follows a similar structure:
+
+1. Define the relevant parameter(s) (mean or proportion)
+2. State the null hypothesis as equality (no effect)
+3. State the alternative hypothesis based on the research question
+4. Look for sample statistics that are far enough from the hypothesized values to reject the null hypothesis
+
+The choice between one-sided and two-sided alternatives depends on the specific research question and theoretical expectations. In these cases, Problems 1, 3, and 7 all have directional alternatives based on the researchers' expectations about the direction of the effect.

@@ -1,0 +1,279 @@
+---
+title: "Probability with R - Exercise 12.2"
+author: "Lucas Liona"
+format:
+  pdf:
+    toc: true
+    fig-width: 8
+    fig-height: 6
+  html:
+    toc: true
+    code-fold: show
+    fig-width: 8
+    fig-height: 6
+execute:
+  echo: true
+---
+
+## Problem
+
+Duncan (1994) looked at drug law enforcement expenditures and drug-induced deaths. Table 12.2.2 gives figures from 1981 to 1991 on the U.S. DEA (Drug Enforcement Agency) budget and the numbers of drug-induced deaths in the United States.
+
+(a) Plot deaths versus DEA budget. Do you think the budget causes deaths? Why not? Plot budget versus deaths. What do you think now?
+
+(b) The variables deaths and budget are affected by a third variable—year.
+    (i) Plot budget versus year. Do you think that a straight line would adequately fit this scatter plot?
+    (ii) What other trend might fit?
+
+(c) Plot deaths versus year. What do you conclude from the three plots?
+
+## Data Entry and Preparation
+
+First we have to input the data from the table and create a data frame:
+
+```{r}
+# Create vectors for the data
+year <- c(1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991)
+budget <- c(216, 239, 255, 292, 344, 372, 486, 493, 543, 558, 692)
+deaths <- c(7106, 7310, 7492, 7892, 8663, 9976, 9796, 10917, 10710, 9463, 10388)
+
+# Create a data frame
+dea_data <- data.frame(year, budget, deaths)
+
+# Display the data
+knitr::kable(dea_data, 
+             col.names = c("Year", "Budget ($ millions)", "Deaths"),
+             caption = "DEA Budget and Drug Deaths (1981-1991)")
+```
+
+## Basic Summary Statistics
+
+Before visualizing the data we can examine some basic statistics/properties:
+
+```{r}
+# Basic summary statistics
+summary(dea_data)
+
+# Correlation between variables
+cor_matrix <- cor(dea_data)
+knitr::kable(cor_matrix, digits = 3, 
+             caption = "Correlation Matrix for DEA Data")
+```
+
+## Part (a): Deaths versus DEA Budget
+
+This is a scatter plot of deaths versus DEA budget:
+
+```{r}
+# Set plot parameters for better readability
+par(mar = c(5, 5, 4, 2), cex.lab = 1.2, cex.axis = 1.1)
+
+# Plot deaths versus budget
+plot(dea_data$budget, dea_data$deaths, 
+     main = "Drug Deaths vs. DEA Budget (1981-1991)",
+     xlab = "DEA Budget ($ millions)",
+     ylab = "Drug-Induced Deaths",
+     pch = 16,
+     col = "darkblue",
+     xlim = c(200, 700),
+     ylim = c(7000, 11000))
+
+# Add grid lines for better readability
+grid(lty = "dotted", col = "lightgray")
+
+# Add a smooth trend line
+lines(smooth.spline(dea_data$budget, dea_data$deaths, df = 5), 
+      col = "red", lwd = 2)
+
+# Add text labels showing the year for each point
+text(dea_data$budget, dea_data$deaths, 
+     labels = dea_data$year, 
+     pos = 4, 
+     cex = 0.8, 
+     col = "darkgray")
+```
+
+Now let's plot budget versus deaths (reverse axes) to see a different persepctive about their relationship:
+
+```{r}
+# Plot budget versus deaths
+plot(dea_data$deaths, dea_data$budget,
+     main = "DEA Budget vs. Drug Deaths (1981-1991)",
+     xlab = "Drug-Induced Deaths",
+     ylab = "DEA Budget ($ millions)",
+     pch = 16,
+     col = "darkred",
+     ylim = c(200, 700),
+     xlim = c(7000, 11000))
+
+# Add grid lines
+grid(lty = "dotted", col = "lightgray")
+
+# Add a smooth trend line
+lines(smooth.spline(dea_data$deaths, dea_data$budget, df = 5), 
+      col = "blue", lwd = 2)
+
+# Add text labels showing the year for each point
+text(dea_data$deaths, dea_data$budget, 
+     labels = dea_data$year, 
+     pos = 4, 
+     cex = 0.8, 
+     col = "darkgray")
+```
+
+**Interpretation:**
+
+The plot of deaths versus DEA budget shows a positive association between the two variables. But this does not necessarily mean that the budget causes deaths. Correlation does not imply causation. Both variables might be increasing over time independently or they could be influenced by other factors. (See Lurking Variable and Conclusions for more on this)
+
+When we plot budget versus deaths, we see the same relationship from a different perspective. The budget did not cause the deaths as a statistical relationship does not necessarily imply a causal relationship. If drug problems are getting worse over time (reflected in increased numbers of deaths) and budgets are continually increased to try to combat the problem, this would be a plausible explanation and a pattern/trend similar to this could be expected.
+
+## Part (b): Budget versus Year
+
+Now we can examine how the DEA budget has changed over time (our lurking variable):
+
+```{r}
+# Plot budget versus year
+plot(dea_data$year, dea_data$budget,
+     main = "DEA Budget Over Time (1981-1991)",
+     xlab = "Year",
+     ylab = "DEA Budget ($ millions)",
+     pch = 16,
+     col = "darkgreen",
+     ylim = c(200, 700),
+     xlim = c(1981, 1991))
+
+# Add grid lines
+grid(lty = "dotted", col = "lightgray")
+
+# Fit linear, quadratic, and exponential models
+linear_model <- lm(budget ~ year, data = dea_data)
+quadratic_model <- lm(budget ~ year + I(year^2), data = dea_data)
+exp_model <- lm(log(budget) ~ year, data = dea_data)
+
+# Add trend lines for different models
+years_seq <- seq(1981, 1991, 0.1)
+lines(dea_data$year, fitted(linear_model), col = "blue", lwd = 2)
+lines(years_seq, predict(quadratic_model, newdata = data.frame(year = years_seq)), 
+      col = "red", lwd = 2, lty = 2)
+lines(years_seq, exp(predict(exp_model, newdata = data.frame(year = years_seq))), 
+      col = "purple", lwd = 2, lty = 3)
+
+# Add a legend
+legend("topleft", 
+       legend = c("Linear", "Quadratic", "Exponential"),
+       col = c("blue", "red", "purple"), 
+       lty = c(1, 2, 3),
+       lwd = 2,
+       cex = 0.8)
+```
+
+Let's compare the models statistically:
+
+```{r}
+# Print model summaries
+cat("Linear Model (Budget ~ Year):\n")
+summary(linear_model)
+
+cat("\nQuadratic Model (Budget ~ Year + Year²):\n")
+summary(quadratic_model)
+
+cat("\nExponential Model (log(Budget) ~ Year):\n")
+summary(exp_model)
+
+# Compare models using AIC
+AIC(linear_model, quadratic_model, exp_model)
+```
+
+**Interpretation:**
+
+The plot of budget versus year shows a clear increasing trend over time. A straight line does not adequately fit this scatter plot - there appears to be a non-linear relationship where the budget increases more rapidly in later years.
+
+Other trends that might fit better are
+
+1. Exponential growth (where the budget grows by a percentage each year)
+2. Quadratic growth (where the rate of increase itself increases over time)
+
+Based on the AIC values and though visual observation, we can assume these are the fitting trends.
+
+## Part (c): Deaths versus Year
+
+Finally we examine how drug-induced deaths have changed over time:
+
+```{r}
+# Plot deaths versus year
+plot(dea_data$year, dea_data$deaths,
+     main = "Drug Deaths Over Time (1981-1991)",
+     xlab = "Year",
+     ylab = "Drug-Induced Deaths",
+     pch = 16,
+     col = "darkred",
+     ylim = c(7000, 11000),
+     xlim = c(1981, 1991))
+
+# Add grid lines
+grid(lty = "dotted", col = "lightgray")
+
+# Fit linear, quadratic, and exponential models for deaths vs year
+linear_model_deaths <- lm(deaths ~ year, data = dea_data)
+quadratic_model_deaths <- lm(deaths ~ year + I(year^2), data = dea_data)
+exp_model_deaths <- lm(log(deaths) ~ year, data = dea_data)
+
+# Add trend lines for different models
+lines(dea_data$year, fitted(linear_model_deaths), col = "blue", lwd = 2)
+lines(years_seq, predict(quadratic_model_deaths, newdata = data.frame(year = years_seq)), 
+      col = "red", lwd = 2, lty = 2)
+lines(years_seq, exp(predict(exp_model_deaths, newdata = data.frame(year = years_seq))), 
+      col = "purple", lwd = 2, lty = 3)
+
+# Add a legend
+legend("topleft", 
+       legend = c("Linear", "Quadratic", "Exponential"),
+       col = c("blue", "red", "purple"), 
+       lty = c(1, 2, 3),
+       lwd = 2,
+       cex = 0.8)
+```
+
+Comparing the models for deaths over time:
+
+```{r}
+# Print model summaries
+cat("Linear Model (Deaths ~ Year):\n")
+summary(linear_model_deaths)
+
+cat("\nQuadratic Model (Deaths ~ Year + Year²):\n")
+summary(quadratic_model_deaths)
+
+cat("\nExponential Model (log(Deaths) ~ Year):\n")
+summary(exp_model_deaths)
+
+# Compare models using AIC
+AIC(linear_model_deaths, quadratic_model_deaths, exp_model_deaths)
+```
+
+## Conclusions
+
+Based on the three plots, we can draw several conclusions:
+
+```{r}
+# Create a scatter plot matrix for a comprehensive overview
+pairs(dea_data, 
+      main = "Scatter Plot Matrix: DEA Budget, Deaths, and Year",
+      pch = 16,
+      col = "darkblue")
+```
+
+1. **Deaths vs. Budget**: There is a positive correlation between DEA budget and drug deaths (r = `r round(cor(dea_data$budget, dea_data$deaths), 2)`). However, this correlation likely does not indicate causation. The budget did not cause the deaths.
+
+2. **Budget vs. Year**: The DEA budget increased over time in a non-linear fashion. Both exponential and quadratic models fit better than a linear model, suggesting accelerating budget growth.
+
+3. **Deaths vs. Year**: Drug-induced deaths also increased over time, but with notable fluctuations, particularly in 1989-1991.
+
+4. **Overall Conclusion**: There does not seem to be any relationship between budget and deaths other than that they both tend to increase with time. Both variables increase independently over time, which explains their apparent correlation. The data does not provide evidence that increasing the DEA budget reduces drug deaths - in fact, despite the increasing budget, deaths generally continued to rise over this period.
+
+5. **Potential Implications**: This raises questions about the effectiveness of increased DEA funding in reducing drug-related mortality during this period. However, we should be cautious about drawing policy conclusions from correlation analysis alone. There may be confounding variables not captured in this dataset, or there may be time lags between policy changes and their effects.
+
+## Lurking Variable
+
+Yes, there is a lurking variable, and in this case it's time. As you can see in the scatter-plot matrix, while deaths and budget do increase in an almost linear way, implying a correlation, there is a lurking variable time that is responsible for this correlation, and we know correlation =/= causation. You can also see in the scatter-plot matrix that budget linearly increases with time, and so do deaths.
+
