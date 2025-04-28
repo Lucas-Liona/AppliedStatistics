@@ -1,0 +1,35 @@
+---
+title: "Statistics 4.3 Exercise 3"
+subtitle: ""
+author: "Lucas Liona"
+format:
+  pdf:
+    toc: true
+    fig-width: 10
+    fig-height: 8
+  html:
+    toc: true
+    code-fold: show
+    fig-width: 10
+    fig-height: 8
+execute:
+  echo: true
+---
+
+## Problem
+
+# Random-Number Table
+
+A random-number table is constructed from a sequence of digits. Each new digit in the sequence is obtained by choosing a digit at random from the 10 digits 0, 1, ..., 9. Let's evaluate each statement:
+
+## (a) Each column should have the same number of 9s in it.
+**False**. No, its random so each column will most likely be different. Although as n approaches infinity they are likely to be similiar.
+
+## (b) Each column should have a similar number of 4s as 5s.
+**True**. They *SHOULD* have a similiar number because as n approaches infinity it should follow a uniform distribution.
+
+## (c) After three 5s in a row, the next number is less likely to be a 5.
+**False**. In a true random sequence the previous occurances do not effect the follow occurances.
+
+## (d) We are less likely to see the sequence 1, 2, 3, 4, 5 than to see the sequence 2, 7, 4, 9, 3.
+**False**. They both have the same probability because each number occuring is a random occurance.

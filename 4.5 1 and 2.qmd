@@ -1,0 +1,118 @@
+---
+title: "Statistics 4.5 Exercises 1 and 2"
+subtitle: ""
+author: "Lucas Liona"
+format:
+  pdf:
+    toc: true
+    fig-width: 10
+    fig-height: 8
+  html:
+    toc: true
+    code-fold: show
+    fig-width: 10
+    fig-height: 8
+execute:
+  echo: true
+---
+## Problems
+# TABLE 4.5.2 Proportions of Unmarried Male-Female Couples Sharing a Household in the United States, 1991
+|                  | Female                                           |       |
+|------------------|--------------------------------------------------|-------|
+| **Male**         | **Never married** | **Divorced** | **Widowed** | **Married to other** | **Total** |
+| Never married    | .401              | .111         | .017        | .025               | .554    |
+| Divorced         | .117              | .195         | .024        | .017               | .353    |
+| Widowed          | .006              | .008         | .016        | .001               | .031    |
+| Married to other | .021              | .022         | .003        | .016               | .062    |
+| **Total**        | .545              | .336         | .060        | .059               | 1.000   |
+
+## Explanation
+This table shows the proportions of unmarried couples living together in the United States in 1991, categorized by their marital status. The table is organized as a cross-tabulation with:
+- Rows representing the male partner's marital status: never married, divorced, widowed, or married to someone else
+- Columns representing the female partner's marital status using the same categories
+- Each cell containing the proportion of all unmarried cohabiting couples that fall into that specific combination
+For example:
+- The largest proportion (.401 or 40.1%) represents couples where both partners have never been married
+- 19.5% of couples consist of both partners being divorced
+- Only 1.6% of couples have both partners being widowed
+- 1.6% of couples have both partners being married to other people
+The row and column totals show the overall distributions by gender. For instance, 55.4% of males in these arrangements have never been married, while 54.5% of females have never been married.
+This data provides insight into the relationship history and legal marital status of unmarried couples who were sharing households in the early 1990s.
+
+## Problem 1
+A house needs to be reroofed in the spring. To do this a dry, windless day is needed. The probability of getting a dry day is 0.7, a windy day is 0.4, and a wet and windy day is 0.2. What is the probability of getting:
+(a) a wet day?
+$$P(W) = 1 - P(D) = .3$$
+(b) a day that is either wet, windy, or both?
+$$ P(wet \cup windy) = P(wet) + P(windy) - P(wet \cap windy)$$
+$$ .3 + .4 - .2 = \textbf{.5} $$
+(c) a day when the house can be reroofed?
+$$ = P(dry \cap windless) $$
+$$ = P(dry)*P(windless) $$ **assuming they are independent**
+$$ = .7 * .6 = \textbf{.42} $$
+
+## Problem 2
+Using the data in Table 4.5.2, what is the probability that for a randomly chosen unmarried couple:
+(a) the male is divorced or married to someone else?
+$$ P(M_D \cup M_{MO}) = P(M_D) + P(M_{MO}) $$
+$$ = .353 + .062 = \textbf{.415} $$
+
+(b) both the male and the female are either divorced or married to someone else?
+$$ P((M_D \cup M_{MO}) \cap (F_D \cup F_{MO})) $$
+$$ = P((M_D \cup M_{MO}) \text{ and } (F_D \cup F_{MO})) $$
+$$ = .195 + .017 + .024 + .017 + .008 + .001 + .022 + .003 + .016 = \textbf{.303} $$
+
+(c) neither is married to anyone else? Such a collection of events is technically known as a partition of $S$.
+$$ P(\text{neither married to others}) = P(\text{not } M_{MO} \text{ and not } F_{MO}) $$
+$$ = 1 - P(M_{MO} \cup F_{MO}) $$
+$$ = 1 - (.062 + .059 - .016) $$
+$$ = 1 - .105 = \textbf{.895} $$
+
+(d) at least one is married to someone else?
+$$ P(M_{MO} \cup F_{MO}) = P(M_{MO}) + P(F_{MO}) - P(M_{MO} \cap F_{MO}) $$
+$$ = .062 + .059 - .016 = \textbf{.105} $$
+
+(e) the male is married to someone else or the female is divorced or both?
+$$ P(M_{MO} \cup F_D) = P(M_{MO}) + P(F_D) - P(M_{MO} \cap F_D) $$
+$$ = .062 + .336 - .022 = \textbf{.376} $$
+
+(f) the female is divorced and the male is not divorced?
+$$ P(F_D \cap \text{not } M_D \cap \text{not } M_{MO}) = P(F_D \cap M_{NM} \cap M_W) $$
+$$ = .111 + .017 = \textbf{.128} $$
+
+# Quiz on Section 4.5
+
+## Question 1
+**If $A$ and $B$ are mutually exclusive, what is the probability that both occur? What is the probability that at least one occurs?**
+
+For mutually exclusive events $A$ and $B$:
+
+**Probability that both occur:**
+$P(A \cap B) = 0$
+
+This is because mutually exclusive events cannot occur simultaneously by definition.
+
+**Probability that at least one occurs:**
+$P(A \cup B) = P(A) + P(B)$
+
+Since the events are mutually exclusive, there is no overlap to subtract.
+
+## Question 2
+**If we have two or more mutually exclusive events, how do we find the probability that at least one of them occurs?**
+
+For mutually exclusive events $A_1, A_2, ..., A_n$:
+
+$P(A_1 \cup A_2 \cup ... \cup A_n) = P(A_1) + P(A_2) + ... + P(A_n)$
+
+We simply add the individual probabilities since there is no overlap between mutually exclusive events.
+
+## Question 3
+**Why is it sometimes easier to compute $P(A)$ from $1 - P(A^c)$?**
+
+Computing $P(A)$ from $1 - P(A^c)$ (where $A^c$ is the complement of $A$) is often easier when:
+
+1. The event $A$ is complex with many possible outcomes
+2. The complement $A^c$ has fewer outcomes or a simpler structure
+3. $A$ can be defined as "at least one" of several events (making $A^c$ "none of them")
+
+This approach leverages the complement rule: $P(A) + P(A^c) = 1$, which can simplify calculations significantly when $A^c$ is more straightforward to analyze than $A$ directly.

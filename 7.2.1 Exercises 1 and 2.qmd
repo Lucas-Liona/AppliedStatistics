@@ -1,0 +1,155 @@
+---
+title: "Statistics 7.2.1 Exercises 1 and 2"
+subtitle: "Standard Error and Normal Distributions"
+author: "Lucas Liona"
+format:
+  pdf:
+    toc: true
+    fig-width: 10
+    fig-height: 8
+  html:
+    toc: true
+    code-fold: show
+    fig-width: 10
+    fig-height: 8
+execute:
+  echo: true
+---
+
+## Exercise 1: Sample Size and Standard Error
+
+We know that $\text{sd}(\bar{X}) = \frac{\sigma}{\sqrt{n}}$, where $\sigma$ is the population standard deviation and $n$ is the sample size. Also, $\text{sd}(\bar{X})$ decreases proportionally to $\frac{1}{\sqrt{n}}$.
+
+Given information:
+- Initial sample size is 10 observations
+- At this sample size, $\text{sd}(\bar{X}) = 9$
+
+Let's solve for how many additional observations are needed in each scenario.
+
+### Part (a): Reducing $\text{sd}(\bar{X})$ to 4.5
+
+We need to find the new sample size $n_2$ such that $\text{sd}_2(\bar{X}) = 4.5$.
+
+Using the relationship between standard errors and sample sizes:
+$\frac{\text{sd}_2(\bar{X})}{\text{sd}_1(\bar{X})} = \sqrt{\frac{n_1}{n_2}}$
+
+$\frac{4.5}{9} = \sqrt{\frac{10}{n_2}}$
+
+$\left(\frac{4.5}{9}\right)^2 = \frac{10}{n_2}$
+
+$\frac{20.25}{81} = \frac{10}{n_2}$
+
+$n_2 = \frac{10 \times 81}{20.25} = \frac{810}{20.25} = 40$
+
+Since we already have 10 observations, we need an additional 30 observations.
+
+```{r}
+# Verify calculation
+n1 <- 10
+sd1 <- 9
+sd2 <- 4.5
+
+n2 <- n1 * (sd1/sd2)^2
+additional_obs <- n2 - n1
+
+cat("New sample size needed:", n2, "\n")
+cat("Additional observations needed:", additional_obs, "\n")
+```
+
+### Part (b): Reducing $\text{sd}(\bar{X})$ to 3
+
+Using the same approach:
+$\frac{3}{9} = \sqrt{\frac{10}{n_2}}$
+
+$\left(\frac{3}{9}\right)^2 = \frac{10}{n_2}$
+
+$\frac{9}{81} = \frac{10}{n_2}$
+
+$n_2 = \frac{10 \times 81}{9} = \frac{810}{9} = 90$
+
+Since we already have 10 observations, we need an additional 80 observations.
+
+```{r}
+sd2 <- 3
+n2 <- n1 * (sd1/sd2)^2
+additional_obs <- n2 - n1
+
+cat("New sample size needed:", n2, "\n")
+cat("Additional observations needed:", additional_obs, "\n")
+```
+
+### Part (c): Reducing $\text{sd}(\bar{X})$ to 1
+
+Using the same approach:
+$\frac{1}{9} = \sqrt{\frac{10}{n_2}}$
+
+$\left(\frac{1}{9}\right)^2 = \frac{10}{n_2}$
+
+$\frac{1}{81} = \frac{10}{n_2}$
+
+$n_2 = \frac{10 \times 81}{1} = 810$
+
+Since we already have 10 observations, we need an additional 800 observations.
+
+```{r}
+sd2 <- 1
+n2 <- n1 * (sd1/sd2)^2
+additional_obs <- n2 - n1
+
+cat("New sample size needed:", n2, "\n")
+cat("Additional observations needed:", additional_obs, "\n")
+```
+
+## Exercise 2: Normal Distribution and Probability Calculation
+
+### Problem Setup
+
+Given information:
+- Monthly profits ($X$) follow Normal distribution: $X \sim \text{Normal}(\mu = 10, \sigma = 3.5)$ million dollars
+- Average is calculated over a six-month period: $\bar{X}$ 
+- Company pays dividend if $\bar{X} > 8.5$ million
+- Need to find probability that company will pay a dividend
+
+### Finding the Distribution of $\bar{X}$
+
+When individual observations follow a Normal distribution, the sampling distribution of the mean also follows a Normal distribution:
+
+$\bar{X} \sim \text{Normal}(\mu_{\bar{X}}, \sigma_{\bar{X}})$
+
+Where:
+- $\mu_{\bar{X}} = \mu = 10$ million (the mean of $\bar{X}$ equals the population mean)
+- $\sigma_{\bar{X}} = \frac{\sigma}{\sqrt{n}} = \frac{3.5}{\sqrt{6}} = \frac{3.5}{2.45} \approx 1.429$ million
+
+```{r}
+mu <- 10       # Population mean
+sigma <- 3.5   # Population standard deviation
+n <- 6         # Sample size (6 months)
+
+mu_x_bar <- mu
+sigma_x_bar <- sigma / sqrt(n)
+
+cat("Mean of sampling distribution:", mu_x_bar, "million\n")
+cat("Standard deviation of sampling distribution:", sigma_x_bar, "million\n")
+```
+
+### Calculating the Probability of Paying Dividend
+
+We need to find $P(\bar{X} > 8.5)$
+
+First, we standardize to find the z-score:
+$z = \frac{8.5 - 10}{1.429} \approx -1.05$
+
+Then, we find the probability:
+$P(\bar{X} > 8.5) = P(Z > -1.05) = 1 - P(Z \leq -1.05)$
+
+```{r}
+threshold <- 8.5
+z_score <- (threshold - mu_x_bar) / sigma_x_bar
+probability <- 1 - pnorm(z_score)
+
+cat("Z-score:", z_score, "\n")
+cat("Probability of paying dividend:", probability, "\n")
+cat("Probability as percentage:", probability * 100, "%\n")
+```
+
+The probability that the company will pay an annual dividend is approximately 0.853 or 85.3%.

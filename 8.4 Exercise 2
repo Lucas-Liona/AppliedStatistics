@@ -1,0 +1,70 @@
+---
+title: "Statistics 8.4 Exercise 2"
+subtitle: "95% Confidence Interval"
+author: "Lucas Liona"
+format:
+  pdf:
+    toc: true
+    fig-width: 8
+    fig-height: 6
+  html:
+    toc: true
+    code-fold: show
+    fig-width: 8
+    fig-height: 6
+execute:
+  echo: true
+---
+
+## Problem
+Calculate a 95% confidence interval for the difference for the true mean testosterone levels for 1- to 30-per-day smokers and 31- to 70-per-day smokers from the data given in the Exercises for Section 7.5, problem 4.
+
+## Solution
+
+First, let's establish the summary statistics from the provided data:
+
+- 1-30 cigarettes/day: $\bar{x}_1 = 715.6$ ng/dL, $s_1 = 248.0$ ng/dL, $n_1 = 31$  
+- 31-70 cigarettes/day: $\bar{x}_2 = 795.1$ ng/dL, $s_2 = 305.3$ ng/dL, $n_2 = 28$
+
+For the 95% confidence interval, we need the appropriate t-value with degrees of freedom equal to the minimum of $(n_1 - 1)$ and $(n_2 - 1)$.
+
+```{r}
+# Calculate degrees of freedom
+df <- min(31 - 1, 28 - 1)
+df
+
+# Find t-value for 95% CI
+t_value <- qt(0.975, df)
+t_value
+```
+
+The standard error of the difference between means is:
+
+```{r}
+# Calculate standard error
+se_diff <- sqrt((248.0^2/31) + (305.3^2/28))
+se_diff
+```
+
+Now we can calculate the 95% confidence interval:
+
+```{r}
+# Calculate difference in means
+mean_diff <- 715.6 - 795.1
+mean_diff
+
+# Calculate margin of error
+margin_error <- t_value * se_diff
+
+# Calculate confidence interval
+lower_bound <- mean_diff - margin_error
+upper_bound <- mean_diff + margin_error
+
+c(lower_bound, upper_bound)
+```
+
+## Interpretation
+
+With 95% confidence, the true difference in mean testosterone levels between 1-30 per day smokers and 31-70 per day smokers falls between `r round(lower_bound, 1)` ng/dL and `r round(upper_bound, 1)` ng/dL.
+
+Since this interval includes zero, we cannot conclude there is a statistically significant difference in testosterone levels between these two groups of smokers at the 95% confidence level.

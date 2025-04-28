@@ -1,0 +1,220 @@
+---
+title: "Statistics 2.3.1 Exercises 1-3"
+subtitle: "Unemployment Rates"
+author: "Lucas Liona"
+format:
+  pdf:
+    toc: true
+    fig-width: 8
+    fig-height: 6
+  html:
+    toc: true
+    code-fold: show
+    fig-width: 8
+    fig-height: 6
+execute:
+  echo: true
+---
+
+## Problem
+
+Using the unemployment rate data from 1995 for EEC members and nonmembers as provided in Section 2.3.1, I'll analyze patterns through dot plots and compare unemployment rates between these groups. The data includes:
+
+**Members of European Economic Community (EEC)**: 13% (Belgium), 10% (Denmark), 11.6% (France), 9.4% (Germany), 9.5% (Greece), 13.2% (Ireland), 12% (Italy), 8.4% (Netherlands), 7.2% (Portugal), 22.9% (Spain), 8.2% (UK).
+
+**Nonmembers of the EEC**: 8.5% (Australia), 4.6% (Austria), 9.5% (Canada), 17.2% (Finland), 5% (Iceland), 3.1% (Japan), 5% (Norway), 6.4% (New Zealand), 7.5% (Sweden), 4.2% (Switzerland), 5.6% (United States).
+
+I'll create dot plots to visualize and compare these unemployment patterns.
+
+## Data Preparation
+
+First, I'll create vectors with the unemployment rates and country names:
+
+```{r}
+# EEC members data
+eec_countries <- c("Belgium", "Denmark", "France", "Germany", "Greece", "Ireland", 
+                  "Italy", "Netherlands", "Portugal", "Spain", "UK")
+eec_rates <- c(13, 10, 11.6, 9.4, 9.5, 13.2, 12, 8.4, 7.2, 22.9, 8.2)
+
+# Non-EEC members data
+non_eec_countries <- c("Australia", "Austria", "Canada", "Finland", "Iceland", "Japan", 
+                      "Norway", "New Zealand", "Sweden", "Switzerland", "USA")
+non_eec_rates <- c(8.5, 4.6, 9.5, 17.2, 5, 3.1, 5, 6.4, 7.5, 4.2, 5.6)
+
+# Sorting the data to minimize label overlapping
+eec_order <- order(eec_rates)
+sorted_eec_rates <- eec_rates[eec_order]
+sorted_eec_countries <- eec_countries[eec_order]
+
+non_eec_order <- order(non_eec_rates)
+sorted_non_eec_rates <- non_eec_rates[non_eec_order]
+sorted_non_eec_countries <- non_eec_countries[non_eec_order]
+```
+
+## Exercise 1: Dot Plot for EEC Members
+
+Let's create an improved dot plot showing unemployment rates for EEC members with better label placement and connecting lines:
+
+```{r}
+# Set up a better plotting environment with even more space for labels
+par(mar = c(9, 4, 3, 2))  # Increase bottom margin further for rotated labels
+
+# Create an improved dot plot for EEC members
+plot(sorted_eec_rates, rep(1, length(sorted_eec_rates)), 
+     xlim = c(5, 25),  # Focus on the relevant range
+     ylim = c(0.7, 1.3),
+     xlab = "", ylab = "", yaxt = "n", 
+     main = "Unemployment Rates in EEC Countries (1995)",
+     pch = 19, cex = 1.2, col = "darkblue")
+
+# Add x-axis label with space
+mtext("Unemployment Rate (%)", side = 1, line = 7.5)
+
+# Add gridlines
+abline(v = seq(5, 25, by = 5), lty = 3, col = "lightgray")
+abline(h = 1, lwd = 2)
+
+# Add country labels with rotation and proper vertical offset
+# Stagger the labels (odd-numbered labels higher, even-numbered labels lower)
+label_y_positions <- rep(c(0.98, 0.89), length=length(sorted_eec_rates))
+
+# Add connecting lines from dots to labels
+for (i in 1:length(sorted_eec_rates)) {
+  segments(sorted_eec_rates[i], 1, sorted_eec_rates[i], label_y_positions[i], 
+           col = "gray", lty = 2)
+}
+
+# Add the labels
+text(sorted_eec_rates, label_y_positions, labels = sorted_eec_countries, 
+     srt = 45, adj = 1, cex = 0.9)
+
+# Add a caption
+mtext("Spain stands out as a high-unemployment outlier.", side = 1, line = 3, cex = 0.8)
+```
+
+### Commentary on EEC Dot Plot
+
+Looking at the dot plot for EEC members, Spain clearly stands out as a high-unemployment outlier with a rate of 22.9%. Most other EEC countries have unemployment rates between 7% and 13%, forming several clusters:
+
+- A higher cluster (12-13.2%): Belgium, Ireland, and Italy
+- A middle cluster (10-11.6%): Denmark and France  
+- A lower-middle cluster (8.2-9.5%): Germany, Greece, Netherlands, and UK
+- The lowest rate: Portugal at 7.2%
+
+The distribution is spread out with Spain creating a long right tail. This suggests significant economic differences existed among EEC members in 1995.
+
+## Exercise 2: Dot Plot for Non-EEC Countries
+
+Now let's create a similar improved dot plot for non-EEC countries with better label positioning and connecting lines:
+
+```{r}
+# Set up plotting environment
+par(mar = c(9, 4, 3, 2))  # Increase bottom margin for rotated labels
+
+# Create an improved dot plot for non-EEC members
+plot(sorted_non_eec_rates, rep(1, length(sorted_non_eec_rates)), 
+     xlim = c(0, 20),  # Focus on the relevant range
+     ylim = c(0.7, 1.3),
+     xlab = "", ylab = "", yaxt = "n", 
+     main = "Unemployment Rates in Non-EEC Countries (1995)",
+     pch = 19, cex = 1.2, col = "darkred")
+
+# Add x-axis label with space
+mtext("Unemployment Rate (%)", side = 1, line = 7.5)
+
+# Add gridlines
+abline(v = seq(0, 20, by = 5), lty = 3, col = "lightgray")
+abline(h = 1, lwd = 2)
+
+# Add country labels with staggered positions to avoid overlap
+label_y_positions <- rep(c(0.98, 0.86), length=length(sorted_non_eec_rates))
+
+# Add connecting lines from dots to labels
+for (i in 1:length(sorted_non_eec_rates)) {
+  segments(sorted_non_eec_rates[i], 1, sorted_non_eec_rates[i], label_y_positions[i], 
+           col = "gray", lty = 2)
+}
+
+# Add the labels
+text(sorted_non_eec_rates, label_y_positions, labels = sorted_non_eec_countries, 
+     srt = 45, adj = 1, cex = 0.95)
+
+# Add a caption
+mtext("Finland stands out as a high-unemployment outlier.", side = 1, line = 3, cex = 0.8)
+```
+
+### Commentary on Non-EEC Dot Plot
+
+The non-EEC countries show a different pattern from the EEC members. Finland stands out as a high-unemployment outlier at 17.2%, similar to Spain's position in the EEC plot. However, most non-EEC countries have unemployment rates below 8%, suggesting generally lower unemployment than in the EEC group.
+
+The clusters appear as:
+- High outlier: Finland (17.2%)
+- Upper-middle: Canada (9.5%) and Australia (8.5%)  
+- Middle range: Sweden (7.5%) and New Zealand (6.4%)
+- Lower range (3.1-5.6%): Austria, Iceland, Japan, Norway, Switzerland, and USA
+
+Japan has the lowest unemployment rate at 3.1%. The distribution is more concentrated toward the lower end than the EEC plot, with only Finland having a notably high rate. This suggests that most non-EEC countries had relatively low unemployment in 1995.
+
+## Exercise 3: Combined Comparison Plot
+
+To compare both groups directly, I'll create a plot showing both EEC and non-EEC countries on the same scale:
+
+```{r}
+# Create a clearer comparative plot
+plot(1, 1, type = "n", xlim = c(0, 25), ylim = c(0, 3),
+     xlab = "Unemployment Rate (%)", ylab = "", yaxt = "n", 
+     main = "Comparison of Unemployment Rates (1995)")
+
+# Add horizontal grid lines and vertical reference lines
+abline(h = 1, lwd = 1.5)
+abline(h = 2, lwd = 1.5)
+abline(v = seq(0, 25, by = 5), lty = 3, col = "lightgray")
+
+# Add points for EEC countries
+points(eec_rates, rep(2, length(eec_rates)), pch = 19, cex = 1.2, col = "darkblue")
+
+# Add points for non-EEC countries
+points(non_eec_rates, rep(1, length(non_eec_rates)), pch = 19, cex = 1.2, col = "darkred")
+
+# Add axis labels with better positioning
+axis(2, at = c(1, 2), labels = c("non-EEC", "EEC"), las = 1, cex.axis = 1.2)
+
+# Add a legend
+legend("topright", legend = c("EEC", "non-EEC"), 
+       col = c("darkblue", "darkred"), pch = 19, cex = 1.2, pt.cex = 1.2)
+
+# Add a caption
+mtext("EEC countries had higher unemployment on average than non-EEC members.", 
+      side = 1, line = 3.5, cex = 0.8)
+```
+
+### Commentary on Comparison Plot
+
+Plotting both groups on the same scale reveals several important patterns:
+
+1. **Overall distribution**: EEC countries generally had higher unemployment rates than non-EEC countries in 1995. Looking at the dots, we can see more EEC countries clustered in the 8-13% range, while most non-EEC countries fall in the 3-8% range.
+
+2. **Outliers**: Both groups have significant outliers - Spain (22.9%) for EEC countries and Finland (17.2%) for non-EEC countries. These outliers indicate that factors beyond EEC membership strongly influenced unemployment in some countries.
+
+3. **Spread**: The EEC countries show a wider spread of unemployment rates, suggesting more economic diversity within the community despite shared policies.
+
+4. **Concentration**: Non-EEC countries have a stronger concentration toward lower unemployment rates, with 7 of 11 countries below 7%, while only 2 of 11 EEC countries fall below that threshold.
+
+5. **Central tendency**: The median unemployment rate for EEC countries appears to be around 10%, while for non-EEC countries it's closer to 5-6%.
+
+This comparative visualization suggests that while EEC membership in 1995 was associated with somewhat higher unemployment rates on average, the presence of outliers in both groups indicates that national economic circumstances and policies likely played a more significant role than membership status alone.
+
+The similar spreads in both groups (ignoring the extreme outliers) suggest that while the central tendencies differ, both EEC and non-EEC countries experienced varied economic conditions in 1995.
+
+## Conclusion
+
+The dot plots reveal that EEC countries had higher unemployment on average than non-EEC members in 1995. Both groups had outliers (Spain and Finland), but the overall pattern shows more non-EEC countries with lower unemployment rates. This could be related to various factors:
+
+1. Different economic policies between EEC and non-EEC countries
+2. Potentially different stages of economic development
+3. The influence of EEC monetary and trade policies
+4. Specific national circumstances affecting outlier countries like Spain and Finland
+
+The comparison demonstrates the usefulness of dot plots for revealing patterns in data. By plotting against the same scale, we can easily compare the distributions of unemployment between these two groups of countries, seeing both the central tendencies and the outliers.
+
+This simple visualization technique effectively shows that while EEC membership might have been associated with higher unemployment levels in 1995, individual country factors were still significant determinants of unemployment rates.

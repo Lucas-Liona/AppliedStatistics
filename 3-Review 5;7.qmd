@@ -1,6 +1,6 @@
 ---
-title: "Statistics Review - Exercise 3"
-subtitle: "Gun Death"
+title: "Statistics Chapter 3 Review - Exercises 5 and 7"
+subtitle: "Gun Death and Fish"
 author: "Lucas Liona"
 format:
   pdf:

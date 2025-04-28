@@ -1,0 +1,110 @@
+---
+title: "Statistics 4 Review Exercises 21 and 25"
+subtitle: "Life Tables and Data Transmission"
+author: "Lucas Liona"
+format:
+  pdf:
+    toc: true
+    fig-width: 10
+    fig-height: 8
+  html:
+    toc: true
+    code-fold: show
+    fig-width: 10
+    fig-height: 8
+execute:
+  echo: true
+---
+# Problem 21: Life Table Analysis
+Consider the life table given in Table 4. It gives the numbers of males and females surviving at different ages per 100,000 born and can thus be interpreted as a way of presenting the probability that a randomly chosen baby will still be alive at each age.
+## TABLE 4 Numbers Surviving per 100,000 Born
+| Age (years) | Males | Females |
+|------------|-------|---------|
+| 0          | 100,000 | 100,000 |
+| 1          | 98,826 | 99,035 |
+| 5          | 98,565 | 98,827 |
+| 10         | 98,414 | 98,692 |
+| 15         | 98,216 | 98,569 |
+| 20         | 97,473 | 98,304 |
+| 25         | 96,594 | 97,998 |
+| 30         | 95,851 | 97,684 |
+| 35         | 95,180 | 97,317 |
+| 40         | 94,407 | 96,792 |
+| 60         | 82,690 | 89,099 |
+Source: NZ Life Tables, 1985-1987.
+## Questions
+**(a)** Find the probability that (i) a boy who survives the first year of life will reach 20; (ii) a 20-year-old woman will reach 60.
+
+(i) $\frac{97,473}{98,826} = 0.9863$
+
+(ii) $\frac{89,099}{98,304} = 0.9064$
+
+**(b)** By evaluating the probabilities of dying within a five-year period after being alive at the start of the period, what is the second most dangerous five-year period up to age 40 (i) for a male? (ii) for a female? You may find the answer to (i) surprising. Can you think of an explanation?
+
+(i) 20 to 25 where the probability of dying is $\frac{97,473-96,594}{97,473} = 0.0090$
+
+(ii) 35 to 40 where the probability of dying is $\frac{97,317-96,792}{97,317} = 0.0054$
+Young men are risk takers.
+
+**(c)** For a 20-year-old man and a 20-year-old woman, what is the probability that (i) both will reach 60? (ii) the woman will reach 60 but the man will die before 60? (iii) neither will reach 60?
+
+(i) $\frac{82,690}{97,473} × \frac{89,099}{98,304} = 0.8483 × 0.9064 = 0.7689$
+
+(ii) $\frac{97,473-82,690}{97,473} × \frac{89,099}{98,304} = 0.1516 × 0.9064 = 0.1375$
+
+(iii) $\frac{97,473-82,690}{97,473} × \frac{98,304-89,099}{98,304} = 0.1516 × 0.0936 = 0.0142$
+
+**(d)** What assumption did you have to make about the lifetimes of the two people in part (c) in order to do the calculations? Would this assumption hold if the man and woman were a married couple? If you think the assumption would fail, would you expect the association between lifetimes to be positive or negative? Why?
+
+We have assumed that the life times of the man and the woman are independent.
+
+No. Positive: Keeping each other alive. Two people in a couple will tend to be more similar in diet and lifestyle factors than two random people and they will have more similar exposures to hazards.
+
+**(e)** Assume that 20-year-old men and women exist in equal numbers. What is the probability that a random 20-year-old person will live until 40?
+
+A proportion $\frac{97,473}{97,473+98,304}$ of males who are alive at 20 lives to 40. The corresponding proportion for females is $\frac{96,792}{97,473+98,304}$. We construct the following two-way table that applies to people at age 20:
+
+| | Male | Female | Total |
+|-|------|--------|-------|
+| Live till 40 | $\frac{94,407}{97,473} × 0.5$ | $\frac{96,792}{98,304} × 0.5$ | ? |
+| Don't live till 40 | ? | ? | ? |
+| Total | 0.5 | 0.5 | 1.0 |
+
+From this we obtain $p(Live\ till\ 40) = \frac{94,407}{97,473} × 0.5 + \frac{96,792}{98,304} × 0.5 = 0.9766$
+
+**(f)** What assumption is being made by applying the answers in (b)(ii), (c), and (e) to people who are currently 20 years old? How valid do you think the assumption is?
+
+We assume that the survival rates haven't changed since the data were compiled. However, we can expect life expectancies, and hence the survival rates, to have increased a little. Still, the reason is still reasonable, given the possible improvements. The survival rates in the life table reflect current death rates for people at each age at the time the data was collected. For example, the people now dying or not dying at age 60 were 20-years old 40 years ago. The environment (including diet, disease patterns and many other factors) of 40 years ago may be quite different from the environment current 20-year olds will experience over the next 30 years and such differences may produce different death rates for current 20-year olds. So these predictions depend on death rates for people of every age being the same as they were in 1985-7.
+
+# Problem 25: Digital Data Transmission
+Digital data are transmitted as a sequence of signals that represent 0s and 1s. Suppose that such data are being transmitted to a satellite and then relayed to a distant site. Suppose that, due to electrical interference in the atmosphere, there is a 1-in-1000 chance that a transmitted 0 will be reversed between the sender and satellite (i.e., distorted to the extent that the satellite's receiver interprets it as a 1) and a 2-in-1000 chance that a transmitted 1 will be reversed. Suppose that 40% of transmitted digits are 0s.
+
+**(a)** What is the probability that a transmitted digit is correctly received by the satellite?
+
+We construct the following two-way table:
+
+| Digit | Correct | Not correct | Total |
+|-------|---------|-------------|-------|
+| 0 | 0.4 × 0.999 | 0.4 × 0.001 | 0.4 |
+| 1 | 0.6 × 0.998 | 0.6 × 0.002 | 0.6 |
+| Total | ? | ? | 1.0 |
+
+and complete it to obtain:
+
+| | Correct | Not correct | Total |
+|-|---------|-------------|-------|
+| 0 | 0.999 × 0.4 = 0.3996 | 0.001 × 0.4 = 0.0004 | 0.4 |
+| 1 | 0.998 × 0.6 = 0.5988 | 0.002 × 0.6 = 0.0012 | 0.6 |
+| Total | 0.9984 | 0.0016 | 1.0 |
+
+Reading from the table we obtain $p(Correct) = 0.9984$
+
+**(b)** Assuming independence, what is the probability that all digits are received correctly (i) if 10,000 digits are transmitted? (ii) if 100,0000 are transmitted?
+
+(i) $0.9984^{10000} = 0.2046$
+
+(ii) $0.9984^{100000} = 1.11 × 10^{-7}$
+
+**(c)** Suppose that between the satellite and the receiver, the chances of reversal are twice as large as they were between the sender and satellite. Assuming independence, what is the probability that a digit reaches the receiver as originally sent?
+
+The probability of reversing twice will be negligible so that we can ignore this event. The required probability is then $0.4 × 0.999 × 0.998 + 0.6 × 0.998 × 0.996 = 0.9968$

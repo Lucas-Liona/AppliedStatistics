@@ -1,0 +1,505 @@
+---
+title: "Statistics Chapter 2 Review - Exercises 10-15"
+subtitle: "International Vital Statistics Analysis"
+author: "Lucas Liona"
+format:
+  pdf:
+    toc: true
+    fig-width: 8
+    fig-height: 6
+  html:
+    toc: true
+    code-fold: show
+    fig-width: 8
+    fig-height: 6
+execute:
+  echo: true
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(ggplot2)
+```
+
+## Introduction
+
+This analysis examines international vital statistics from Table 9, containing demographic data for countries grouped into four categories: industrialized nations, African nations, Southeast Asian countries, and Central/South American countries. I'll explore patterns in birth rates, death rates, life expectancy, and more to understand global demographic trends.
+
+## Data Import and Setup
+
+First, let's import the data and take a look at its structure:
+
+```{r}
+# Import data
+vital_data <- read.csv("vital_data_ch2.csv", header = TRUE)
+
+# Display the first few rows
+head(vital_data)
+
+# Recode country type for better readability
+vital_data$type_name <- factor(vital_data$type, 
+                             levels = 1:4,
+                             labels = c("Industrialized", "Africa", 
+                                       "SE Asia", "C&S America"))
+```
+
+## Exercise 10: Birth Rates in Industrialized Countries
+
+Let's examine birth rates for industrialized countries using both dot plots and bar graphs.
+
+```{r}
+# Filter for industrialized countries
+industrial <- vital_data[vital_data$type == 1, ]
+
+# Create a dot plot
+ggplot(industrial, aes(x = births, y = reorder(Country, births))) +
+  geom_point(size = 2, color = "darkblue") +
+  labs(title = "Birth Rates for Industrialized Countries",
+       x = "Birth Rate (per 1000 population)",
+       y = "") +
+  theme_minimal()
+
+# Create a bar graph with sensible ordering
+ggplot(industrial, aes(x = reorder(Country, births), y = births)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Birth Rates for Industrialized Countries",
+       x = "",
+       y = "Birth Rate (per 1000 population)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+From these visualizations, I notice interesting patterns forming among industrialized countries. Countries tend to cluster into groups with similar birth rates. European countries (especially Germany, Italy, and Spain) have notably lower birth rates than others. New Zealand, the United States, and Australia form another cluster with higher rates. This suggests possible regional or cultural factors influencing birth rates among developed nations.
+
+The bar graph makes it easier to compare relative values - we can see that Germany's rate (around 9.7) is only about 60% of New Zealand's rate (around 15.8). These visualizations help us quickly identify which countries are outliers and which follow similar patterns.
+
+## Exercise 11: Life Expectancies in African Countries
+
+Now let's examine life expectancies across African countries.
+
+```{r}
+# Filter for African countries
+african <- vital_data[vital_data$type == 2, ]
+
+# Create a dot plot
+ggplot(african, aes(x = life.both, y = reorder(Country, life.both))) +
+  geom_point(size = 2, color = "darkgreen") +
+  labs(title = "Life Expectancy in African Countries",
+       x = "Life Expectancy (years)",
+       y = "") +
+  theme_minimal()
+
+# Create a bar graph
+ggplot(african, aes(x = reorder(Country, life.both), y = life.both)) +
+  geom_bar(stat = "identity", fill = "darkgreen") +
+  labs(title = "Life Expectancy in African Countries",
+       x = "",
+       y = "Life Expectancy (years)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+The range in life expectancy across African countries is striking. Morocco and Algeria have the highest life expectancies (around 69.5 and 68.3 years), while Malawi, Zambia, and Uganda have the lowest (around 36.2, 36.3, and 40.3 years). That's a difference of over 33 years between the highest and lowest values!
+
+Unlike the industrialized countries that showed distinct clusters, African countries show a more spread-out distribution. This suggests more varied health and economic conditions across the continent. The stark differences likely reflect varying levels of healthcare access, prevalence of diseases like HIV/AIDS, and economic development.
+
+## Exercise 12: Comparing Male and Female Life Expectancies
+
+### Part A: Visual Comparisons for Industrialized Countries
+
+Let's compare male and female life expectancies for industrialized countries using different visualization methods.
+
+```{r}
+# Create datasets for stem-and-leaf plot
+male_life <- industrial$life.male
+female_life <- industrial$life.fem
+
+# Stem-and-leaf plot (use 'aplpack' if available)
+# For demonstration, let's use a simple display method
+cat("MALES\n")
+stem(male_life, scale = 1)
+cat("\nFEMALES\n")
+stem(female_life, scale = 1)
+
+# Create data frame for dot plots
+life_exp_data <- data.frame(
+  Country = rep(industrial$Country, 2),
+  Gender = rep(c("Male", "Female"), each = nrow(industrial)),
+  LifeExp = c(industrial$life.male, industrial$life.fem)
+)
+
+# Dot plot comparing distributions
+ggplot(life_exp_data, aes(x = LifeExp, y = Gender)) +
+  geom_jitter(height = 0.1, width = 0, alpha = 0.7, size = 2) +
+  labs(title = "Life Expectancy by Gender in Industrialized Countries",
+       x = "Life Expectancy (years)",
+       y = "") +
+  theme_minimal()
+
+# Bar graph comparing countries (paired)
+# First reshape data for paired bar chart
+industrial_long <- data.frame(
+  Country = rep(industrial$Country, 2),
+  Gender = rep(c("Male", "Female"), each = nrow(industrial)),
+  LifeExp = c(industrial$life.male, industrial$life.fem)
+)
+
+# Create bar graph for first few countries (for clarity)
+ggplot(industrial_long[industrial_long$Country %in% industrial$Country[1:8],], 
+       aes(x = Country, y = LifeExp, fill = Gender)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Male vs Female Life Expectancy (Selected Countries)",
+       x = "",
+       y = "Life Expectancy (years)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+### Part B: Modified Plots to Compare Countries
+
+Let's create modified versions of these plots that highlight the gender differences by country.
+
+```{r}
+# Calculate gender gap
+industrial$gender_gap <- industrial$life.fem - industrial$life.male
+
+# Create connected dot plot (line-linked)
+ggplot(industrial, aes(y = reorder(Country, gender_gap))) +
+  geom_segment(aes(x = life.male, xend = life.fem, 
+                   yend = Country), 
+               color = "gray", size = 1) +
+  geom_point(aes(x = life.male), color = "blue", size = 2) +
+  geom_point(aes(x = life.fem), color = "red", size = 2) +
+  labs(title = "Gender Gap in Life Expectancy - Industrialized Countries",
+       subtitle = "Red = Female, Blue = Male",
+       x = "Life Expectancy (years)",
+       y = "") +
+  theme_minimal()
+
+# Create a bar chart of the gender gap itself
+ggplot(industrial, aes(x = reorder(Country, gender_gap), y = gender_gap)) +
+  geom_bar(stat = "identity", fill = "purple") +
+  labs(title = "Gender Gap in Life Expectancy (Female - Male)",
+       x = "",
+       y = "Gap (years)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+These visualizations reveal complete separation between female and male life expectancies in industrialized countries - the lowest female life expectancy is higher than the highest male life expectancy! The gap varies considerably across countries, ranging from about 3.4 years to 8 years.
+
+The line-linked dot plot is particularly effective in showing both the absolute values and the differences simultaneously. It makes it easy to see that France has the largest gender gap (about 8 years difference), while Finland has the smallest (about 3.4 years). 
+
+This raises interesting questions about social, environmental, and healthcare factors that might explain these differences in gender gaps between countries.
+
+## Exercise 13: Analyzing Life Expectancy Differences
+
+### Part A: Understanding the Difference Measure
+
+Consider the difference `diff = female life expectancy - male life expectancy`. If a country has a value of 3 for diff, this means that women live, on average, 3 years longer than men.
+
+A value of 0 would represent equality between male and female life expectancies. Values greater than 0 (which we see in virtually all countries) indicate that women live longer than men. Values less than 0 would mean men outlive women, which is rare globally.
+
+The difference measure is intuitive to understand as it directly tells us how many additional years of life a woman can expect compared to a man in the same country.
+
+### Part B: Understanding the Ratio Measure
+
+Consider the ratio `ratio = female life expectancy/male life expectancy`. If a country has a value of 1.2 for ratio, this means that women live, on average, 20% longer than men.
+
+A value of 1 would represent perfect equality. Values greater than 1 (which we see in most countries) mean women live longer than men. Values less than 1 would mean men outlive women.
+
+The ratio measure has the advantage of being scale-independent - it shows the proportional difference rather than the absolute difference. This can be useful for comparing countries with very different baseline life expectancies.
+
+Let's calculate and compare both measures:
+
+```{r}
+# Calculate the ratio
+vital_data$life_ratio <- vital_data$life.fem / vital_data$life.male
+vital_data$life_diff <- vital_data$life.fem - vital_data$life.male
+
+# Create a comparison table for industrialized countries
+life_comp <- vital_data[vital_data$type == 1, 
+                       c("Country", "life.male", "life.fem", 
+                         "life_diff", "life_ratio")]
+
+# Order by difference
+life_comp_ordered <- life_comp[order(life_comp$life_diff), ]
+
+# Display table
+kable(life_comp_ordered, 
+      col.names = c("Country", "Male Life Exp.", "Female Life Exp.", 
+                    "Difference (F-M)", "Ratio (F/M)"),
+      digits = c(0, 2, 2, 2, 3),
+      caption = "Gender Differences in Life Expectancy - Industrialized Countries")
+```
+
+For most demographic analyses, the difference measure is more directly interpretable when discussing life expectancy - saying "women live 6 years longer than men" conveys more practical meaning than "women live 1.08 times longer than men". However, the ratio can be useful when comparing countries with vastly different baseline life expectancies.
+
+## Exercise 14: Comparative Analysis of International Vital Statistics
+
+### Part A: Infant Mortality Comparison
+
+Let's compare infant mortality rates across different regions:
+
+```{r}
+# Create a plot comparing infant mortality rates
+ggplot(vital_data, aes(x = mor.both, y = type_name, color = type_name)) +
+  geom_jitter(height = 0.2, width = 0) +
+  labs(title = "Infant Mortality Rates by Region",
+       x = "Infant Mortality Rate (per 1000 births)",
+       y = "") +
+  theme_minimal() +
+  guides(color = "none")  # Remove redundant legend
+
+# Add a boxplot for comparison
+ggplot(vital_data, aes(x = type_name, y = mor.both, fill = type_name)) +
+  geom_boxplot(alpha = 0.7) +
+  labs(title = "Distribution of Infant Mortality Rates by Region",
+       x = "",
+       y = "Infant Mortality Rate (per 1000 births)") +
+  theme_minimal() +
+  guides(fill = "none")  # Remove redundant legend
+```
+
+The infant mortality rate shows dramatic differences across regions. Industrialized countries have uniformly low rates, typically below 7 per 1000 births. In stark contrast, some African countries have rates exceeding 130 per 1000 - nearly 20 times higher!
+
+The boxplot clearly shows the vast differences in both medians and variability. African countries not only have the highest median infant mortality, but also the widest spread, indicating significant inequality within the region. Southeast Asian countries show an interesting pattern with some countries (like Japan, Singapore, and Hong Kong) having rates similar to industrialized nations, while others have much higher rates.
+
+### Part B: Gender Disparities in Infant Mortality
+
+Let's examine the ratio of female to male infant mortality:
+
+```{r}
+# Calculate the ratio
+vital_data$mortality_ratio <- vital_data$mor.fem / vital_data$mor.male
+
+# Create a dot plot with countries labeled
+ggplot(vital_data, aes(x = mortality_ratio, y = type_name, color = type_name)) +
+  geom_jitter(height = 0.2, width = 0) +
+  geom_text(data = subset(vital_data, mortality_ratio > 1.1 | mortality_ratio < 0.9),
+            aes(label = Country), hjust = -0.1, size = 3) +
+  labs(title = "Female/Male Infant Mortality Ratio by Region",
+       subtitle = "Values > 1 indicate higher female mortality; outliers labeled",
+       x = "Ratio (Female/Male)",
+       y = "") +
+  geom_vline(xintercept = 1, linetype = "dashed") +
+  theme_minimal() +
+  guides(color = "none")  # Remove redundant legend
+```
+
+This analysis reveals a fascinating biological pattern - in most countries, male infants have higher mortality rates than females (ratio < 1). This is generally considered a biological norm due to various factors including genetic and developmental differences between male and female infants.
+
+However, there are notable exceptions, particularly China and Finland. China's significantly higher female infant mortality (ratio > 1.5) stands out dramatically and likely reflects social factors such as gender preference and possibly the historical impact of the one-child policy.
+
+Finland's case is more puzzling, as one wouldn't expect gender-based social preferences in a Scandinavian country known for gender equality. This might represent a statistical anomaly, reporting difference, or an area worthy of further investigation.
+
+### Part C: Life Expectancy Patterns
+
+Let's examine overall life expectancy patterns:
+
+```{r}
+# Create a dot plot with regions
+ggplot(vital_data, aes(x = life.both, y = type_name, color = type_name)) +
+  geom_jitter(height = 0.2, width = 0) +
+  labs(title = "Life Expectancy by Region",
+       x = "Life Expectancy (years)",
+       y = "") +
+  theme_minimal() +
+  guides(color = "none")  # Remove redundant legend
+
+# Highlight specific countries
+countries_to_label <- c("Japan", "Hong Kong", "Singapore", 
+                       "Malawi", "Zambia", "Morocco",
+                       "Bolivia", "Chile")
+
+ggplot(vital_data, aes(x = life.both, y = type_name, color = type_name)) +
+  geom_jitter(height = 0.2, width = 0) +
+  geom_text(data = subset(vital_data, Country %in% countries_to_label),
+            aes(label = Country), hjust = -0.1, size = 3) +
+  labs(title = "Life Expectancy by Region (Notable Countries Labeled)",
+       x = "Life Expectancy (years)",
+       y = "") +
+  theme_minimal() +
+  guides(color = "none")  # Remove redundant legend
+```
+
+Life expectancy follows almost a mirror image of the infant mortality pattern. Industrialized countries and select Asian nations (Japan, Hong Kong, Singapore) have the highest life expectancies, typically exceeding 75 years. African countries show both the lowest averages and the widest disparities, with some countries below 40 years (Malawi, Zambia) and others approaching 70 years (Morocco).
+
+This visualization confirms the well-established relationship between economic development and life expectancy, while also highlighting significant within-region variations, particularly in Africa and Asia.
+
+### Part D: Birth and Death Rates
+
+Finally, let's examine birth and death rates:
+
+```{r}
+# Create a scatterplot of birth rates vs death rates
+ggplot(vital_data, aes(x = births, y = deaths, color = type_name)) +
+  geom_point(size = 2) +
+  geom_text(data = subset(vital_data, deaths > 20 | births > 45),
+            aes(label = Country), hjust = -0.1, size = 3) +
+  labs(title = "Birth Rates vs Death Rates by Region",
+       x = "Birth Rate (per 1000 population)",
+       y = "Death Rate (per 1000 population)") +
+  theme_minimal()
+```
+
+This scatterplot reveals a complex relationship between birth and death rates. While one might expect countries with high death rates to also have high birth rates as a compensatory mechanism, the pattern isn't straightforward.
+
+Industrialized countries typically have both low birth rates and moderate death rates. The higher death rates despite good healthcare reflect their older population structures. African countries show more variation - some have very high birth rates paired with high death rates, suggesting demographic transition in earlier stages.
+
+Interestingly, some Asian and Central/South American countries have achieved the "sweet spot" of low death rates but still moderate birth rates, potentially indicating rapid population growth.
+
+## Exercise 15: Miscellaneous Questions
+
+### Part A: Factors Affecting Birth Rates
+
+Birth rates are influenced by numerous interrelated factors:
+
+1. **Age structure of the population** - Countries with more women of childbearing age naturally have higher birth rates
+
+2. **Healthcare and birth control** - Access to contraception, family planning services, and maternal healthcare significantly impact birth rates
+
+3. **Economic factors** - Economic development, women's participation in the workforce, and cost of raising children all influence family planning decisions
+
+4. **Infant mortality** - Higher infant mortality rates often correlate with higher birth rates as families may have more children expecting that some won't survive
+
+5. **Cultural and religious factors** - Attitudes toward family size, marriage age, and gender roles shape reproductive choices
+
+6. **Government policies** - Pro-natalist or population control policies directly affect birth rates
+
+7. **Education levels** - Higher education, especially for women, typically leads to lower birth rates
+
+These factors don't operate in isolation but interact in complex ways that vary across regions and cultures.
+
+### Part B: Higher Death Rates in Industrialized Countries
+
+The seemingly counterintuitive pattern of higher death rates in some industrialized countries can be explained by population age structure. Industrialized countries have:
+
+1. **Older populations** - Due to longer life expectancies and lower birth rates, industrialized countries have a larger proportion of elderly people, who naturally have higher mortality rates
+
+2. **Lower infant and child mortality** - While young people still die in industrialized countries, the rates are much lower than in developing nations
+
+3. **Different causes of death** - In industrialized countries, deaths are primarily from chronic diseases affecting older people (heart disease, cancer), while developing countries have more deaths from infectious diseases, malnutrition, and other causes affecting younger populations
+
+This demographic reality means that crude death rates aren't always a reliable indicator of healthcare quality or living standards - they must be interpreted alongside age-specific mortality rates and population structure.
+
+### Part C: Finland's Unusual Infant Mortality Ratio
+
+Finland's unusual female-to-male infant mortality ratio (where females have higher mortality than males) is particularly striking because:
+
+1. It contradicts the biological norm seen in virtually all other countries, where male infants typically have higher mortality rates
+
+2. Finland has one of the world's best healthcare systems and strong gender equality
+
+3. Finland's overall infant mortality rate is comparable to other industrialized nations; it's specifically the gender distribution that's unusual
+
+This peculiarity could potentially be due to:
+- A statistical anomaly due to Finland's small population
+- Different reporting or classification methods
+- A genuine demographic phenomenon worthy of further study
+
+Without additional data or context, it's difficult to determine whether this represents an actual health disparity or a data artifact.
+
+### Part D: Meaning of Regional Averages
+
+Let's consider the mean birth rate for Southeast Asian countries:
+
+```{r}
+# Calculate mean birth rate for SE Asian countries
+se_asia_mean <- mean(vital_data$births[vital_data$type == 3])
+se_asia_median <- median(vital_data$births[vital_data$type == 3])
+
+# Create a table showing individual values
+se_asia_births <- vital_data[vital_data$type == 3, c("Country", "births")]
+se_asia_births <- se_asia_births[order(se_asia_births$births), ]
+
+# Display results
+cat("Mean birth rate for SE Asian countries:", round(se_asia_mean, 2), "\n")
+cat("Median birth rate for SE Asian countries:", se_asia_median, "\n\n")
+
+kable(se_asia_births, 
+      col.names = c("Country", "Birth Rate"), 
+      caption = "Birth Rates in Southeast Asian Countries")
+```
+
+The mean birth rate for Southeast Asian countries provides limited insight for several reasons:
+
+1. **Ignores population differences** - China and Japan, with their massive populations but lower birth rates, are given the same weight as smaller countries like Singapore
+
+2. **Masks regional variation** - The range from Japan (10.19) to Indonesia (23.67) is substantial
+
+3. **Doesn't represent the average person** - A true regional birth rate would need to be weighted by population size
+
+The median is somewhat more robust against outliers than the mean, but it still faces the fundamental problem of treating each country equally regardless of population size.
+
+For meaningful regional analysis, a population-weighted average would be more appropriate, calculated as: (sum of births across all countries) / (sum of populations).
+
+### Part E: Measuring Global Improvement
+
+When evaluating global economic improvement, the choice of measuring countries versus people has profound implications:
+
+If we focus on the number of countries experiencing growth (70 declining vs. 15 growing), the picture seems pessimistic. However, when we consider that the 15 growing countries include China and India, representing nearly half of humanity, the picture shifts dramatically.
+
+The more relevant measure depends on our purpose:
+- For understanding geopolitical patterns, the number of countries matters
+- For assessing human welfare, the number of people affected is more relevant
+- For comprehensive understanding, both metrics should be considered together
+
+From a humanitarian perspective, I believe the number of people experiencing improvement is ultimately more meaningful. A person's well-being isn't determined by which nation they happen to be born in, but by their actual living conditions. When billions of people see rising living standards, this represents genuine human progress, even if it's concentrated in fewer countries.
+
+### Part F: Population Increase Formula
+
+To calculate the net increase in population size (per thousand) for each country, we would use:
+
+$$\text{Increase} = \text{Births} + \text{Migrants} - \text{Deaths}$$
+
+Where:
+- Births = Annual births per 1000 population
+- Deaths = Annual deaths per 1000 population
+- Migrants = Net migration (immigrants minus emigrants) per 1000 population
+
+Let's calculate this for each country:
+
+```{r}
+# Calculate population increase
+vital_data$increase <- vital_data$births + vital_data$migrants - vital_data$deaths
+
+# Create a table showing countries with highest and lowest increases
+top_increase <- vital_data[order(-vital_data$increase), c("Country", "type_name", "increase")][1:5, ]
+bottom_increase <- vital_data[order(vital_data$increase), c("Country", "type_name", "increase")][1:5, ]
+
+# Display results
+kable(top_increase, 
+      col.names = c("Country", "Region", "Population Increase Rate"), 
+      caption = "Countries with Highest Population Growth Rates (per 1000)")
+
+kable(bottom_increase, 
+      col.names = c("Country", "Region", "Population Increase Rate"), 
+      caption = "Countries with Lowest Population Growth Rates (per 1000)")
+```
+
+This formula captures all three components of population change:
+1. Natural increase (births minus deaths)
+2. Net migration (immigration minus emigration)
+
+The resulting increase rate indicates how quickly a country's population is growing or shrinking. High increase rates often indicate countries in the middle of demographic transition (declining death rates but still high birth rates). Negative increase rates indicate countries with shrinking populations, which brings its own set of social and economic challenges.
+
+## Conclusion
+
+This analysis of international vital statistics reveals complex patterns in global demographics. Development levels strongly influence infant mortality, life expectancy, and birth rates, but significant regional and country-specific variations exist within these broader patterns.
+
+Some of the most striking findings include:
+
+1. The extraordinary range in life expectancy across countries (from mid-30s in some African nations to over 80 in Japan)
+
+2. The persistence of gender gaps in life expectancy across all regions, with women typically outliving men
+
+3. The unusual cases that defy typical patterns (like Finland's infant mortality gender ratio and China's extreme female infant mortality)
+
+4. The complex relationship between birth and death rates, shaped by demographic transition stages
+
+5. The dramatic differences in population growth rates, with some countries rapidly expanding while others face population decline
+
+These patterns reflect the interplay of biological, social, economic, and healthcare factors that shape human demographics. While economic development generally improves health outcomes, the wide variations within regions suggest that policy choices, cultural factors, and historical context also play crucial roles.
+
+This type of comparative demographic analysis helps us understand global patterns of human development and identifies areas where targeted interventions might improve outcomes.

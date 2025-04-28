@@ -1,0 +1,84 @@
+---
+title: "Statistics 4.6.3 Exercise 1"
+subtitle: "Blood Types"
+author: "Lucas Liona"
+format:
+  pdf:
+    toc: true
+    fig-width: 10
+    fig-height: 8
+  html:
+    toc: true
+    code-fold: show
+    fig-width: 10
+    fig-height: 8
+execute:
+  echo: true
+---
+
+# Blood Type Problem
+
+## Question 1
+In New Zealand, 3.24% of Europeans and 1.77% of Maori have type AB blood. A blood bank in a district where the population is 85% European and 15% Maori wants to know how much AB blood to stock. What percentage of people in the district have AB blood? What percentage of the people in the AB blood group are Maori? 
+
+### Part A: What percentage of people in the district have AB blood?
+
+Let's denote:
+- $P(E)$ = proportion of Europeans = 0.85
+- $P(M)$ = proportion of Maori = 0.15
+- $P(AB|E)$ = proportion of Europeans with AB blood = 0.0324
+- $P(AB|M)$ = proportion of Maori with AB blood = 0.0177
+
+To find the overall percentage with AB blood:
+$$P(AB) = P(AB|E) \cdot P(E) + P(AB|M) \cdot P(M)$$
+$$P(AB) = 0.0324 \cdot 0.85 + 0.0177 \cdot 0.15$$
+$$P(AB) = 0.02754 + 0.002655$$
+$$P(AB) = 0.030195 = 3.02\%$$
+
+### Part B: What percentage of the people in the AB blood group are Maori?
+
+We want to find $P(M|AB)$, which can be calculated using Bayes' theorem:
+
+$$P(M|AB) = \frac{P(AB|M) \cdot P(M)}{P(AB)}$$
+
+$$P(M|AB) = \frac{0.0177 \cdot 0.15}{0.030195}$$
+
+$$P(M|AB) = \frac{0.002655}{0.030195} = 0.0879 = 8.79\%$$
+
+
+Based on Table 4.6.7 from the textbook, you can find the probability that someone has HIV given that they test positive (pr(HIV | Positive)) for the United States, Canada, and Ireland.
+
+The pages shows that these *conditional* probabilities can be found with Bayes theorem:
+
+$$ P(HIV | Positive) = P(HIV and Positive) / P(Positive) $$
+
+Where:
+- $$ p (HIV and Positive) = p(Positive | HIV) × p(HIV) $$
+- p(Positive) includes both true positives and false positives
+
+From the data provided in the document:
+- $$ p(Positive | HIV) = 0.98 (test sensitivity) $$
+- $$ p(Negative | Not HIV) = 0.93 (test specificity) $$
+
+Using the pr(HIV) values for each country from Table 4.6.7:
+
+### United States
+- $$ p(HIV) = 0.00864 $$
+- $$ p(HIV | Positive) = 0.109 (10.9%) $$
+
+This means that if someone in the US tested positive in 1991, there was only about an 11% chance they actually had HIV.
+
+### Canada
+- $$ p(HIV) = 0.00229 $$
+- $$ p(HIV | Positive) = 0.031 (3.1%) $$
+
+In Canada, a positive test result only indicated about a 3% probability of actually having HIV.
+
+### Ireland
+- $$ p(HIV) = 0.00039 $$
+- $$ p(HIV | Positive) = 0.005 (0.5%) $$
+
+For Ireland, the probability was extremely low - only 0.5% of those testing positive actually had HIV, meaning 99.5% of positive tests would have been false positives.
+
+This demonstrates why widespread screening for rare conditions can be problematic - the lower the prevalence of a condition in a population, the higher the proportion of false positives among all positive test results, even with reasonably accurate tests.
+
