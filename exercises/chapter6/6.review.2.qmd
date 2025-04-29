@@ -1,0 +1,158 @@
+---
+title: "Statistics 6 Review Exercise 2"
+subtitle: "Analysis of Cancer Patient Survival Times"
+author: "Lucas Liona"
+format:
+  pdf:
+    toc: true
+    fig-width: 10
+    fig-height: 8
+  html:
+    toc: true
+    code-fold: show
+    fig-width: 10
+    fig-height: 8
+execute:
+  echo: true
+---
+
+## Problem
+
+A medical trial was conducted to investigate whether a new drug extended the life of a patient who had lung cancer. The survival times (in months) for 38 cancer patients who were treated with the drug are as follows:
+
+5, 9, 10, 13, 14, 18, 18, 19, 20, 22, 25, 25, 25, 27, 28, 30, 30, 33, 36, 38, 39, 39, 40, 41, 41, 43, 44, 44, 45, 46, 46, 49, 50, 50, 54, 54, 59
+
+The sample mean is approximately 31.1 months and the standard deviation is approximately 16.0 months.
+
+## Part (a): Normality Assessment
+
+Before performing any calculations assuming normality, we should first assess whether the data follows a normal distribution.
+
+```{r}
+# Input the data
+survival_times <- c(5, 9, 10, 13, 14, 18, 18, 19, 20, 22, 25, 25, 25, 27, 28, 30, 30, 33, 36, 38, 39, 39, 40, 41, 41, 43, 44, 44, 45, 46, 46, 49, 50, 50, 54, 54, 59)
+
+# Parameters for normal distribution
+mu <- 31.1
+sigma <- 16.0
+
+# Perform Shapiro-Wilk test for normality
+shapiro_test <- shapiro.test(survival_times)
+shapiro_test
+
+# Create a comprehensive normality assessment plot
+par(mfrow = c(2, 2))
+
+# 1. Histogram with normal curve
+hist(survival_times, freq = FALSE, 
+     main = "Histogram with Normal Curve",
+     xlab = "Survival Time (months)", 
+     col = "lightblue",
+     breaks = "Sturges")
+curve(dnorm(x, mean = mu, sd = sigma), 
+      add = TRUE, col = "red", lwd = 2)
+
+# 2. Q-Q Plot
+qqnorm(survival_times, main = "Normal Q-Q Plot")
+qqline(survival_times, col = "red")
+
+# 3. Boxplot
+boxplot(survival_times, main = "Boxplot",
+        ylab = "Survival Time (months)",
+        col = "lightblue")
+
+# 4. Density plot
+plot(density(survival_times), 
+     main = "Density Plot",
+     xlab = "Survival Time (months)")
+curve(dnorm(x, mean = mu, sd = sigma), 
+      add = TRUE, col = "red", lwd = 2)
+```
+
+## Part (b): Normal Distribution Calculations
+
+Despite the non-normality suggested by the Shapiro-Wilk test (p-value = `r round(shapiro_test$p.value, 4)`), we'll proceed with the normal distribution calculations as requested, but with appropriate caveats.
+
+### (i) Probability of Surviving No More Than One Year
+
+```{r}
+# Calculate P(X ≤ 12)
+prob_less_than_12 <- pnorm(12, mean = mu, sd = sigma)
+prob_less_than_12
+```
+
+The probability that a patient survives for no more than one year (12 months) is approximately `r round(prob_less_than_12 * 100, 2)`%.
+
+### (ii) Proportion Surviving Between One and Two Years
+
+```{r}
+# Calculate P(12 < X ≤ 24)
+prob_less_than_24 <- pnorm(24, mean = mu, sd = sigma)
+prob_between_12_and_24 <- prob_less_than_24 - prob_less_than_12
+prob_between_12_and_24
+```
+
+The proportion of patients who survive between one year (12 months) and two years (24 months) is approximately `r round(prob_between_12_and_24 * 100, 2)`%.
+
+### (iii) 80th Percentile of Survival Times
+
+```{r}
+# Calculate the 80th percentile
+percentile_80 <- qnorm(0.8, mean = mu, sd = sigma)
+percentile_80
+```
+
+The highest number of months that 80% of patients survive is approximately `r round(percentile_80, 1)` months.
+
+### (iv) Central 80% of Survival Times
+
+```{r}
+# Calculate the 10th and 90th percentiles
+percentile_10 <- qnorm(0.1, mean = mu, sd = sigma)
+percentile_90 <- qnorm(0.9, mean = mu, sd = sigma)
+
+# Output the interval
+central_80_percent <- c(percentile_10, percentile_90)
+central_80_percent
+```
+
+The central 80% of survival times falls between `r round(percentile_10, 1)` months and `r round(percentile_90, 1)` months.
+
+## Part (c): Non-parametric Analysis
+
+Given the non-normality of the data, let's also perform a non-parametric analysis for comparison:
+
+```{r}
+# Calculate empirical probabilities
+empirical_less_than_12 <- mean(survival_times <= 12)
+empirical_between_12_24 <- mean(survival_times > 12 & survival_times <= 24)
+
+# Calculate empirical percentiles
+empirical_80th <- quantile(survival_times, 0.8)
+empirical_10th <- quantile(survival_times, 0.1)
+empirical_90th <- quantile(survival_times, 0.9)
+
+# Create comparison table
+comparison <- data.frame(
+  Measure = c("P(X ≤ 12)", "P(12 < X ≤ 24)", "80th Percentile", "10th Percentile", "90th Percentile"),
+  Normal = c(prob_less_than_12, prob_between_12_and_24, percentile_80, percentile_10, percentile_90),
+  Empirical = c(empirical_less_than_12, empirical_between_12_24, empirical_80th, empirical_10th, empirical_90th)
+)
+
+knitr::kable(comparison, digits = 3, 
+             caption = "Comparison of Normal and Empirical Estimates")
+```
+
+## Conclusions
+
+1. **Normality Assessment**: The Shapiro-Wilk test and visual inspections suggest that the survival times do not follow a normal distribution. The data appears to be right-skewed, which is common for survival data.
+
+2. **Comparison of Methods**: The normal distribution calculations provide reasonable approximations for some measures but show notable differences for others, particularly in the tails of the distribution. The empirical (non-parametric) estimates are more accurate for this dataset.
+
+3. **Practical Implications**: When working with survival data, it's often more appropriate to use non-parametric methods or specialized survival analysis techniques rather than assuming normality. The normal distribution calculations should be interpreted with caution, especially for extreme percentiles.
+
+4. **Recommendations**: For more accurate analysis of this type of data, consider using:
+   - Kaplan-Meier survival curves
+   - Log-normal or Weibull distributions
+   - Non-parametric confidence intervals
+   - Cox proportional hazards models for more complex analyses

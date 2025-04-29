@@ -1,0 +1,144 @@
+---
+title: "Probability with R - Exercise 2.1"
+subtitle: "Skewness"
+author: "Lucas Liona"
+format:
+  pdf:
+    toc: true
+    fig-width: 8
+    fig-height: 6
+  html:
+    toc: true
+    code-fold: show
+    fig-width: 8
+    fig-height: 6
+execute:
+  echo: true
+---
+
+## Problem
+
+1.  Write the skewness program and use it to calculate the skewness coefficient of the four examination subjects in results.txt. What can you say about these data?
+
+2.  Pearson has given an approximate formula for the skewness, which is easier to calculate than the exact formula:
+
+    $\text{skew} \approx \frac{3(\text{mean} - \text{median})}{\text{sd}}$
+
+Write a program to calculate this and apply it to the data in results.txt. Is it a reasonable approximation?
+
+3.  For the class of 50 students of computing detailed in Exercises 1.1, use R to
+
+<!-- -->
+
+(a) obtain the summary statistics for each gender and for the entire class;
+(b) calculate the deciles for each gender and for the entire class;
+(c) obtain the skewness coefficient for the females and for the males.
+
+<!-- -->
+
+4.  It is required to estimate the number of message buffers in use in the main memory of the computer system at Roantree Retailers Ltd. To do this, 20 programs were run and the numbers of message buffers in use were found to be
+
+    ```         
+    141, 146, 157, 151, 152, 140, 142, 156, 150, 140 
+    139, 135, 143, 146, 146, 152, 140, 136, 149, 148
+    ```
+
+Calculate the average number of buffers used. What is the standard deviation?
+
+Would you say these data are skewed?
+
+## Skewness Coefficient Implementation
+
+```{r}
+# Function to calculate exact skewness coefficient
+skewness_exact <- function(x) {
+  # Input validation
+  if (!is.numeric(x)) {
+    stop("Input must be numeric")
+  }
+  if (length(x) < 3) {
+    stop("Sample size must be at least 3")
+  }
+  
+  # Remove NA values with warning
+  x <- x[!is.na(x)]
+  if (length(x) < length(x)) {
+    warning("NA values were removed from the input")
+  }
+  
+  # Calculate components
+  n <- length(x)
+  mean_x <- mean(x)
+  sum_squared <- sum((x - mean_x)^2)
+  sum_cubed <- sum((x - mean_x)^3)
+  
+  # Calculate skewness
+  skew <- (sqrt(n) * sum_cubed) / (sum_squared^(1.5))
+  
+  return(skew)
+}
+
+# Function to calculate Pearson's approximate skewness
+skewness_pearson <- function(x) {
+  # Input validation
+  if (!is.numeric(x)) {
+    stop("Input must be numeric")
+  }
+  if (length(x) < 3) {
+    stop("Sample size must be at least 3")
+  }
+  
+  # Remove NA values with warning
+  x <- x[!is.na(x)]
+  if (length(x) < length(x)) {
+    warning("NA values were removed from the input")
+  }
+  
+  # Calculate Pearson's skewness
+  mean_x <- mean(x)
+  median_x <- median(x)
+  sd_x <- sd(x)
+  
+  skew <- 3 * (mean_x - median_x) / sd_x
+  
+  return(skew)
+}
+
+# Example usage with the message buffers data
+buffers <- c(141, 146, 157, 151, 152, 140, 142, 156, 150, 140,
+             139, 135, 143, 146, 146, 152, 140, 136, 149, 148)
+
+# Calculate both types of skewness
+exact_skew <- skewness_exact(buffers)
+pearson_skew <- skewness_pearson(buffers)
+
+# Display results
+cat("Exact skewness coefficient:", round(exact_skew, 4), "\n")
+cat("Pearson's approximate skewness:", round(pearson_skew, 4), "\n")
+
+# Compare the two measures
+cat("Difference between exact and approximate:", 
+    round(abs(exact_skew - pearson_skew), 4), "\n")
+
+# Visualize the distribution
+hist(buffers, main = "Distribution of Message Buffers",
+     xlab = "Number of Buffers", col = "lightblue",
+     breaks = "Sturges")
+abline(v = mean(buffers), col = "red", lwd = 2)
+abline(v = median(buffers), col = "blue", lwd = 2)
+legend("topright", 
+       legend = c("Mean", "Median"),
+       col = c("red", "blue"),
+       lwd = 2)
+```
+
+## Interpretation
+
+The skewness coefficient measures the asymmetry of a distribution:
+- A value of 0 indicates perfect symmetry
+- Positive values indicate right-skewed distributions
+- Negative values indicate left-skewed distributions
+
+In this case, both the exact and Pearson's approximate skewness coefficients are close to zero, suggesting that the distribution of message buffers is approximately symmetric. The small difference between the exact and approximate measures indicates that Pearson's approximation is reasonable for this dataset.
+
+The histogram confirms this interpretation, showing a roughly symmetric distribution centered around 145-150 buffers. The mean and median are very close to each other, which is characteristic of symmetric distributions.
