@@ -53,7 +53,7 @@ sorted_non_eec_countries <- non_eec_countries[non_eec_order]
 
 ## Exercise 1: Dot Plot for EEC Members
 
-Let's create an improved dot plot showing unemployment rates for EEC members with better label placement and connecting lines:
+Then we have to create a dot plot showing unemployment rates for EEC members, here I use margins for better label placement and additional connecting lines for readability:
 
 ```{r}
 # Set up a better plotting environment with even more space for labels
@@ -105,7 +105,7 @@ The distribution is spread out with Spain creating a long right tail. This sugge
 
 ## Exercise 2: Dot Plot for Non-EEC Countries
 
-Now let's create a similar improved dot plot for non-EEC countries with better label positioning and connecting lines:
+Now let's create a similar dot plot for non-EEC countries:
 
 ```{r}
 # Set up plotting environment
@@ -145,7 +145,7 @@ mtext("Finland stands out as a high-unemployment outlier.", side = 1, line = 3, 
 
 ### Commentary on Non-EEC Dot Plot
 
-The non-EEC countries show a different pattern from the EEC members. Finland stands out as a high-unemployment outlier at 17.2%, similar to Spain's position in the EEC plot. However, most non-EEC countries have unemployment rates below 8%, suggesting generally lower unemployment than in the EEC group.
+The non-EEC countries show a different pattern from the EEC members. Finland stands out as a high-unemployment outlier at 17.2%, similar to Spain's position in the EEC plot. However, most non-EEC countries have unemployment rates below 8%, suggesting a lower rate of unemployment than in the EEC group.
 
 The clusters appear as:
 - High outlier: Finland (17.2%)
@@ -160,7 +160,7 @@ Japan has the lowest unemployment rate at 3.1%. The distribution is more concent
 To compare both groups directly, I'll create a plot showing both EEC and non-EEC countries on the same scale:
 
 ```{r}
-# Create a clearer comparative plot
+# Create a clear comparative plot
 plot(1, 1, type = "n", xlim = c(0, 25), ylim = c(0, 3),
      xlab = "Unemployment Rate (%)", ylab = "", yaxt = "n", 
      main = "Comparison of Unemployment Rates (1995)")
